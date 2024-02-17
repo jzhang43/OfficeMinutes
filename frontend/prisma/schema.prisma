@@ -12,7 +12,7 @@ model Account {
   userId            String  @db.ObjectId
   type              String
   provider          String
-  providerAccountId String
+  providerAccountId String  
   refresh_token     String? @db.String
   access_token      String? @db.String
   expires_at        Int?
@@ -43,14 +43,14 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  isAdmin       Boolean
-  courseIds     String[] @db.ObjectId
-  courses       Course[] @relation(fields: [courseIds], references: [id])
+  isAdmin       Boolean   @default(false)
+  courseIds     String[]  @db.ObjectId
+  courses       Course[]  @relation(fields: [courseIds], references: [id])
   
 }
 
 model Course {
-  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
   title      String
   userIds    String[]    @db.ObjectId
   users      User[]      @relation(fields: [userIds], references: [id])
