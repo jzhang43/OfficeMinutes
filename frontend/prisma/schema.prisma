@@ -44,14 +44,14 @@ model User {
   accounts      Account[]
   sessions      Session[]
   isAdmin       Boolean
-  joined        Post[]
-  courses       Course[]
+  courseIds     String[] @db.ObjectId
+  courses       Course[] @relation(fields: [courseIds], references: [id])
+  
 }
 
 model Course {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  title:      String
-  users:      User[] 
-  queue:      Post[]
-  onDuty:     User[]
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  userIds    String[]    @db.ObjectId
+  users      User[]      @relation(fields: [userIds], references: [id])
 }
