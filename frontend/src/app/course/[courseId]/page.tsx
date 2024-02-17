@@ -1,6 +1,7 @@
 import { prisma } from "@/app/server/db";
 import OfficeHour from "@/app/components/OfficeHour";
 import TAOfficeHour from "@/app/components/TAOfficeHour";
+import React from "react";
 
 interface PageProps {
   params: {

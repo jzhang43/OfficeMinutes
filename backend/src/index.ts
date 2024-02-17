@@ -31,6 +31,13 @@ io.on("connection", (socket) => {
       .filter((id) => socketId !== id)
       .forEach(() => io.sockets.to(socketId).emit("response", message));
   });
+
+  socket.on("oh_req", ({ message, sockedId }) => {
+    console.log(users, sockedId);
+    users
+      .filter((id) => sockedId !== id)
+      .forEach(() => io.sockets.to(sockedId).emit("oh_res", message));
+  });
 });
 
 server.listen(PORT, () => {
