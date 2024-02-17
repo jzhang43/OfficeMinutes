@@ -1,9 +1,7 @@
-// import { env } from "@env/server.mjs";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-// import { prisma } from "@server/db/client";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaClient } from "@/prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const GOOGLE_API_SCOPE = [
   "https://www.googleapis.com/auth/drive",
@@ -20,19 +18,19 @@ const GOOGLE_API_SCOPE = [
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(PrismaClient),
-  secret: env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET,
-      authorization: {
-        params: {
-          prompt: "select_account",
-          access_type: "offline",
-          response_type: "code",
-          scope: GOOGLE_API_SCOPE.join(" "),
-        },
-      },
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      //   authorization: {
+      //     params: {
+      //       prompt: "select_account",
+      //       access_type: "offline",
+      //       response_type: "code",
+      //       scope: GOOGLE_API_SCOPE.join(" "),
+      //     },
+      //   },
     }),
   ],
 
