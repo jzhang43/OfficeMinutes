@@ -1,8 +1,9 @@
-import { env } from "@env/server.mjs";
+// import { env } from "@env/server.mjs";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "@server/db/client";
+// import { prisma } from "@server/db/client";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { PrismaClient } from "@/prisma/client";
 
 const GOOGLE_API_SCOPE = [
   "https://www.googleapis.com/auth/drive",
@@ -18,7 +19,7 @@ const GOOGLE_API_SCOPE = [
 ];
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(PrismaClient),
   secret: env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
@@ -36,15 +37,6 @@ export const authOptions: NextAuthOptions = {
   ],
 
   // Include user.id on session
-  callbacks: {
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
-        session.user.role = user.role;
-      }
-      return session;
-    },
-  },
 
   // @TODO(nickbar01234) - Update session on client side
 };
