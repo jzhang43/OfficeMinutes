@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Roboto } from "next/font/google";
 import { getServerSession } from "next-auth";
 import SessionProvider from "./components/Providers";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+const roboto = Roboto({
+  weight: ["100", "300", "400", "500", "700", "900"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,7 +29,7 @@ export default async function RootLayout({
     <html lang="en">
       <SessionProvider session={session}>
         <body
-          className={`${inter.className} h-screen w-screen overflow-hidden overscroll-none`}
+          className={`${roboto.className} h-screen w-screen overflow-hidden overscroll-none`}
         >
           {children}
         </body>
