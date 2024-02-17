@@ -22,7 +22,11 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <SessionProvider session={session}>
-        <body className={inter.className}>{children}</body>
+        <body
+          className={`${inter.className} h-screen w-screen overflow-hidden overscroll-none`}
+        >
+          {children}
+        </body>
       </SessionProvider>
     </html>
   );
