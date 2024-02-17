@@ -9,8 +9,8 @@ interface PageProps {
 
 // 65d1286b1c14d455b986bdcb
 const Page = async ({ params }: PageProps) => {
-  const course = await prisma.course.findUniqueOrThrow({
-    where: { id: params.courseId },
+  const course = await prisma.course.findFirstOrThrow({
+    where: { code: params.courseId },
   });
 
   return (

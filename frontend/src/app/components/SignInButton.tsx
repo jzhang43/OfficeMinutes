@@ -4,12 +4,11 @@ import { signIn, signOut, useSession } from "next-auth/react";
 export const SignInButton = () => {
   const { data: session } = useSession();
 
-  console.log(session);
-
   if (session && session.user) {
+    console.log(session);
     return (
       <div>
-        <button onClick={() => signOut()}>Sign Out</button>;
+        <button onClick={() => signOut()}>Sign Out</button>
       </div>
     );
   }

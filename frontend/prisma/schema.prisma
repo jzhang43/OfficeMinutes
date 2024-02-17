@@ -52,6 +52,7 @@ model User {
 model Course {
   id         String      @id @default(auto()) @map("_id") @db.ObjectId
   title      String
+  code       String      @unique
   userIds    String[]    @db.ObjectId
   users      User[]      @relation(fields: [userIds], references: [id])
 }
