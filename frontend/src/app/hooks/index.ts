@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "socket.io-client";
-import { type OfficeHour, Question } from "@/types";
+import { type OfficeHour, Question, Student } from "@/types";
 import { redirect } from "next/navigation";
 
 interface UseWsProps {
@@ -15,7 +15,13 @@ export const useWs = ({ url }: UseWsProps) => {
       redirect("/");
     },
   });
-  const [state, setState] = useState<OfficeHour | null>(null);
+
+  const [state, setState] = React.useState<OfficeHour>({
+    questions: [],
+    tas: [],
+    location: "",
+  });
+  const [student, setStudent] = React.useState<Student | null>(null);
 
   const ws = React.useRef<null | ReturnType<typeof connect>>(null);
 
@@ -32,13 +38,24 @@ export const useWs = ({ url }: UseWsProps) => {
 
     const socket = connect(url);
 
-    socket.on("connect", () => {
-      socket.emit("join", {
-        name: session?.user.name,
-        id: session?.user.id,
-        socket: socket.id,
-      });
-    });
+    const newStudent: Student = {
+      name: session?.user.name,
+      id: session?.user.id,
+      socket: socket.id ?? "",
+    };
+
+    if (student === null) {
+      setStudent(newStudent);
+    }
+
+    // socket.on("connect", () => {
+    //   socket.emit("join", {
+    //     name: newStudent.name,
+    //     id: newStudent.id,
+    //     socket: newStudent.socket,
+    //   });
+    //   // setStudent(newStudent);
+    // });
 
     // socket.on("close", () => setIsReady(false));
 
@@ -46,6 +63,8 @@ export const useWs = ({ url }: UseWsProps) => {
       console.log("State update", state);
       setState(state);
     });
+
+    // socket.emit("fetch");
     // socket.onmessage = (event) => setVal(event.data);
 
     // socket.on("join_queue", ({ socketId, new_question }) => {
@@ -60,14 +79,13 @@ export const useWs = ({ url }: UseWsProps) => {
     //   // .filter((id) => socketId !== id)
     //   // .forEach(() => io.sockets.to(socketId).emit("join_queue_res", queue));
     // });
-
+    console.log("student in hook", student);
     ws.current = socket;
-
     return () => {
       socket.close();
     };
-  }, [session?.user, url]);
+  }, [session?.user, student, url]);
 
   // bind is needed to make sure `send` references correct `this`
-  return { ws, state };
+  return { ws, state, student };
 };

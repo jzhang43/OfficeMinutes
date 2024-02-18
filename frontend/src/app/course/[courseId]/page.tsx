@@ -2,6 +2,8 @@ import { prisma } from "@/app/server/db";
 import OfficeHour from "@/app/components/OfficeHour";
 import TAOfficeHour from "@/app/components/TAOfficeHour";
 import React from "react";
+import { useWs } from "@/app/hooks";
+import OfficeHourWrapper from "@/app/components/OfficeHourWrapper";
 
 interface PageProps {
   params: {
@@ -16,18 +18,13 @@ const Page = async ({ params, searchParams }: PageProps) => {
     where: { code: params.courseId },
   });
 
-  if (searchParams && searchParams.role === "ta") {
-    return (
-      <TAOfficeHour
-        backendUrl={process.env.BACKEND_URL ?? ""}
-        course={course}
-      />
-    );
-  } else {
-    return (
-      <OfficeHour backendUrl={process.env.BACKEND_URL ?? ""} course={course} />
-    );
-  }
+  return (
+    <OfficeHourWrapper
+      course={course}
+      searchParams={searchParams}
+      backendUrl={process.env.BACKEND_URL ?? ""}
+    />
+  );
 };
 
 export default Page;

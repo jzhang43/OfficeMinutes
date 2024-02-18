@@ -34,6 +34,8 @@ app.get("/api", (req: Request, res: Response) => {
 });
 
 io.on("connection", (socket) => {
+  socket.emit("update", state);
+
   socket.on(
     "join",
     ({ name, id, socket }: { name: string; id: string; socket: string }) => {
@@ -44,6 +46,10 @@ io.on("connection", (socket) => {
       console.log(connections);
     }
   );
+
+  socket.on("fetch", () => {
+    io.emit("update", state);
+  });
 
   socket.on("join_queue", (newQuestion: Question) => {
     const index = state.questions.findIndex(
@@ -99,9 +105,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("add_ta", (newTA: Student) => {
-    state.tas.push(newTA);
-    console.log("adding TA: ", state.tas);
-    io.emit("update", state);
+    const index = state.tas.findIndex((ta) => ta.name === newTA.name);
+
+    if (index === -1) {
+      state.tas.push(newTA);
+      console.log("adding TA: ", state.tas);
+      io.emit("update", state);
+    }
   });
 
   socket.on("remove_ta", (currTa: Student) => {
