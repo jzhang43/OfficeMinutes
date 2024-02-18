@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { connect } from "socket.io-client";
-import { OfficeHour, Question } from "../types/socketState";
+import { type OfficeHour, Question } from "@/types";
 import { redirect } from "next/navigation";
 
 interface UseWsProps {

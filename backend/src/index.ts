@@ -100,7 +100,7 @@ io.on("connection", (socket) => {
 
   socket.on("add_ta", (newTA: Student) => {
     state.tas.push(newTA);
-
+    console.log("adding TA: ", state.tas);
     io.emit("update", state);
   });
 
