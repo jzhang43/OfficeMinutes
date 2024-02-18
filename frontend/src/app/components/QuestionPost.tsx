@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { type OfficeHour, Status } from "@/types";
+import { trimName } from "../utils";
 
 interface QuestionPostProps {
   question: OfficeHour["questions"][number];
@@ -15,14 +16,14 @@ export const QuestionPost = (props: QuestionPostProps) => {
   };
 
   return (
-    <div className="flex flex-col justify-between shadow-question rounded-xl h-96 p-5">
+    <div className="flex flex-col justify-between shadow-question rounded-xl h-72 p-5">
       <div className="flex flex-col gap-y-3">
         <div className="flex justify-between">
           <div className="font-bold text-2xl text-[#393939]">
             {props.question.question}
           </div>
           <div className="text-[#393939]">
-            {props.question.students[0].name}
+            {trimName(props.question.students[0].name)}
           </div>
         </div>
 
@@ -43,7 +44,7 @@ export const QuestionPost = (props: QuestionPostProps) => {
           </div>
         </div>
       </div>
-      <div className="justify-center flex px-20">
+      <div className="justify-center flex">
         <button
           className={`w-full uppercase py-4 text-sm rounded shadow-md ${
             joined

@@ -8,6 +8,7 @@ import { Header } from "./Header";
 import JoinModal from "./JoinModal";
 import CurrentGroup from "./CurrentGroup";
 import { useSession } from "next-auth/react";
+import { Sidebar } from "./Popup";
 
 const STATE: OfficeHour = {
   questions: [
@@ -42,6 +43,11 @@ const STATE: OfficeHour = {
           id: "",
           socket: "21312321",
         },
+        {
+          name: "Nicky Doan",
+          id: "65d1790107173f4ac5868a49",
+          socket: "",
+        },
       ],
       description: "I love math",
       private: false,
@@ -68,7 +74,7 @@ const STATE: OfficeHour = {
           socket: "",
         },
       ],
-      description: "I love alcohol",
+      description: "I love programming",
       private: false,
       status: Status.WAITING,
       time: "2:22pm",
@@ -98,6 +104,12 @@ const OfficeHour = (props: OfficeHourProps) => {
   const { backendUrl, course } = props;
   const [officeHourState, setOfficeHourState] = React.useState(STATE);
   const [showModal, setShowModal] = React.useState<boolean>(false);
+  const [clickedLeaveQueue, setClickedLeaveQueue] = React.useState(false);
+  const [hoverStyle, setHoverStyle] = React.useState(false);
+
+  const onHover = () => {
+    setHoverStyle(!hoverStyle);
+  };
 
   const { data: session } = useSession();
 
@@ -123,8 +135,8 @@ const OfficeHour = (props: OfficeHourProps) => {
           setShowModal={setShowModal}
         />
       )}
-      <div className="h-full w-full grid grid-cols-12 pl-12 pr-4">
-        <div className="col-span-9 flex flex-col gap-y-4 py-6 pr-3">
+      <div className="h-full w-full lg:grid lg:grid-cols-12 flex flex-col gap-x-4 pl-12 lg:pr-4">
+        <div className="lg:col-span-9 flex flex-col gap-y-4 py-6">
           <div className="w-full border border-[#0288D1] rounded py-1 px-2 flex gap-x-3">
             <div>
               <svg
@@ -182,19 +194,60 @@ const OfficeHour = (props: OfficeHourProps) => {
               Group Question Board
             </div>
           </div>
-          <div className="h-full grid grid-cols-2 gap-8">
+          <div className="h-full grid grid-cols-2 gap-6">
             {officeHourState.questions.map((question, idx) => (
               <div key={idx} className="lg:col-span-1 col-span-2">
-                <QuestionPost key={idx} question={question} />
+                <QuestionPost question={question} />
               </div>
             ))}
           </div>
         </div>
-        <div className="col-span-3 h-full w-full border-l-2 sticky overflow-x-hidden overflow-y-scroll px-6 py-8">
-          <CurrentGroup state={STATE} />
-          <Queue state={STATE} />
+        <div className="lg:col-span-3 h-full w-full lg:border-l-2 sticky overflow-x-hidden overflow-y-scroll px-6 py-8">
+          <Sidebar>
+            <CurrentGroup state={STATE} clickedConfirm={setClickedLeaveQueue} />
+            <Queue state={STATE} />
+          </Sidebar>
         </div>
       </div>
+      {clickedLeaveQueue && (
+        <div className="flex absolute left-1/2 top-1/2 z-50 w-screen -translate-x-1/2 -translate-y-1/2 transform items-center justify-center text-left bg-transparent">
+          <div className="p-6 bg-white flex flex-col shadow-2xl rounded-lg gap-6 w-[300px]">
+            <button
+              className="justify-end"
+              onClick={() => setClickedLeaveQueue(false)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+              >
+                <path
+                  d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z"
+                  fill="#393939"
+                />
+              </svg>
+            </button>
+            <div className="font-bold text-xl tracking-wider">
+              Are you sure you want to leave the queue?
+            </div>
+            <button
+              onMouseEnter={onHover}
+              onMouseLeave={onHover}
+              className={`w-full uppercase py-4 text-sm rounded shadow-md ${
+                hoverStyle
+                  ? "border-[#0288D1] border-2 text-[#0288D1]"
+                  : "bg-[#1E88E5] text-white"
+              }`}
+              /* IMPLEMENT LEAVE QUEUE STATE*/
+              onClick={() => setClickedLeaveQueue(false)}
+            >
+              CONFIRM
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

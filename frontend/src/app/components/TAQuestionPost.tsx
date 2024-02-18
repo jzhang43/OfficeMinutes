@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { type OfficeHour, Status } from "@/types";
+import { trimName } from "../utils";
 
 interface QuestionPostProps {
   question: OfficeHour["questions"][number];
@@ -22,7 +23,7 @@ export const TAQuestionPost = (props: QuestionPostProps) => {
             {props.question.question}
           </div>
           <div className="text-[#393939]">
-            {props.question.students[0].name}
+            {trimName(props.question.students[0].name)}
           </div>
         </div>
 
@@ -56,7 +57,7 @@ export const TAQuestionPost = (props: QuestionPostProps) => {
           </div>
         </div>
       )}
-      <div className="justify-end px-10">
+      <div className="justify-end">
         <button
           className={`w-full uppercase py-4 text-sm rounded shadow-md ${
             started

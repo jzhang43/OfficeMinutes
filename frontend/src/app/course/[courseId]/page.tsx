@@ -14,7 +14,6 @@ const Page = async ({ params, searchParams }: PageProps) => {
   const course = await prisma.course.findFirstOrThrow({
     where: { code: params.courseId },
   });
-  console.log(searchParams);
 
   if (searchParams && searchParams.role === "ta") {
     return (

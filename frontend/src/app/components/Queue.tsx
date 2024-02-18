@@ -1,5 +1,6 @@
 import React from "react";
 import { type OfficeHour, Status } from "@/types";
+import { trimName } from "../utils";
 
 interface Props {
   state: OfficeHour;
@@ -18,7 +19,7 @@ export default function Queue({ state }: Props) {
       </div>
       {state.questions.map((question, index) => (
         <span className="font-normal text-base" key={index}>
-          {index + 1}. {question.students[0].name}
+          {index + 1}. {trimName(question.students[0].name)}
         </span>
       ))}
     </div>
