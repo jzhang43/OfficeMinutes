@@ -153,7 +153,7 @@ const StageTwoSubmitModal = ({
   const handleQuestionUpdate = () => {
     const updatedQuestion = { ...question };
 
-    if (updatedQuestion.question === "" || updatedQuestion.description === "") {
+    if (questionText === "" || descriptionText === "") {
       alert("Please fill out the required fields");
     } else {
       updatedQuestion.question = questionText;
@@ -258,7 +258,7 @@ const StageTwoFollowUpModal = ({
   const handleQuestionUpdate = () => {
     const updatedQuestion = { ...question };
 
-    if (updatedQuestion.question === "" || updatedQuestion.description === "") {
+    if (questionText === "" || descriptionText === "") {
       alert("Please fill out the required fields");
     } else {
       updatedQuestion.question = questionText;
