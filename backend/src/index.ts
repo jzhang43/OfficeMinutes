@@ -2,7 +2,13 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import http from "http";
 import socket from "socket.io";
-import { Question } from "../../frontend/src/app/types/socketState";
+import { OfficeHour, Question } from "../types";
+
+interface Connection {
+  name: string;
+  id: string;
+  socket: string;
+}
 
 const PORT = process.env.PORT || 8000;
 
@@ -14,8 +20,13 @@ const io = new socket.Server(server, {
   },
 });
 
-let users: string[] = [];
-const queue: Question[] = [];
+let connections: Connection[] = [];
+
+const state: OfficeHour = {
+  questions: [],
+  tas: [],
+  location: "",
+};
 
 app.use(cors());
 app.get("/api", (req: Request, res: Response) => {
@@ -23,30 +34,54 @@ app.get("/api", (req: Request, res: Response) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("User connected" + socket.id);
+  socket.on(
+    "join",
+    ({ name, id, socket }: { name: string; id: string; socket: string }) => {
+      console.log(`User ${name} joining`);
+      if (connections.find((connection) => connection.id === id) == undefined) {
+        connections.push({ name, id, socket });
+      }
+      console.log(connections);
+    }
+  );
 
-  users.push(socket.id);
-
-  socket.on("oh_req", ({ message, socketId }) => {
-    console.log(users, socketId);
-    users
-      .filter((id) => socketId !== id)
-      .forEach(() => io.sockets.to(socketId).emit("oh_res", message));
+  socket.on("join_queue", (question: Question) => {
+    state.questions.push(questio);
   });
 
-  socket.on("on_reload", ({ socketId }) => {
-    users = users.filter((id) => socketId !== id);
-    // console.log(users);
-  });
+  // console.log("User connected" + socket.id);
 
-  socket.on("join_queue", ({ socketId, new_question }) => {
-    queue.push(new_question);
-    // console.log("Server Q" + queue);
-    console.log("First: ", queue[0]);
-    users.forEach(() => io.sockets.to(socketId).emit("join_queue_res", queue));
-    // .filter((id) => socketId !== id)
-    // .forEach(() => io.sockets.to(socketId).emit("join_queue_res", queue));
-  });
+  // users.push(socket.id);
+
+  // socket.on("join", ({ id }) => {
+  //   console.log("User ", id, "joined");
+  // });
+
+  // socket.on("oh_req", ({ message, socketId }) => {
+  //   console.log("Hello", users, socketId);
+  //   users
+  //     .filter((id) => socketId !== id)
+  //     .forEach(() => io.sockets.to(socketId).emit("oh_res", message));
+  // });
+
+  // socket.on("on_reload", ({ socketId }) => {
+  //   users = users.filter((id) => socketId !== id);
+  //   // console.log(users);
+  // });
+
+  // socket.on("join", () => {
+  //   console.log("Connecting");
+  //   users.forEach((user) => io.sockets.to(user).emit("update", []));
+  // });
+
+  // socket.on("join_queue", ({ socketId, new_question }) => {
+  //   queue.push(new_question);
+  //   // console.log("Server Q" + queue);
+  //   console.log("First: ", queue[0]);
+  //   users.forEach(() => io.sockets.to(socketId).emit("join_queue_res", queue));
+  //   // .filter((id) => socketId !== id)
+  //   // .forEach(() => io.sockets.to(socketId).emit("join_queue_res", queue));
+  // });
 });
 
 server.listen(PORT, () => {
