@@ -56,7 +56,7 @@ export const TAQuestionPost = (props: QuestionPostProps) => {
           </div>
         </div>
       )}
-      <div className="justify-end px-5">
+      <div className="justify-end px-10">
         <button
           className={`w-full uppercase py-4 text-sm rounded shadow-md ${
             started

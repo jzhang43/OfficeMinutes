@@ -24,11 +24,14 @@ export const CourseSelection = ({ course }: CourseSelection) => {
           <div className="h-48 w-96 shadow-tile p-5 bg-white flex flex-col gap-y-4 items-center justify-center">
             <button
               className="py-4 w-full uppercase text-lg bg-[#1E88E5] text-white rounded"
-              onClick={() => router.push(`/course/${course.code}`, quer)}
+              onClick={() => router.push(`/course/${course.code}?role=ta`)}
             >
               TA
             </button>
-            <button className="py-4 w-full uppercase text-lg bg-[#1E88E5] text-white rounded">
+            <button
+              className="py-4 w-full uppercase text-lg bg-[#1E88E5] text-white rounded"
+              onClick={() => router.push(`/course/${course.code}?role=student`)}
+            >
               Student
             </button>
           </div>
