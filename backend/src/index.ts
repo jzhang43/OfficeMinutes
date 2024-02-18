@@ -58,7 +58,7 @@ io.on("connection", (socket) => {
 
     console.log("progress state:", state.questions[0].status);
 
-    socket.emit("update", state);
+    io.emit("update", state);
   });
 
   /*
@@ -77,7 +77,7 @@ io.on("connection", (socket) => {
       state.questions[index] = oldQuestion;
       console.log(state.questions[index].students);
     }
-    socket.emit("update", state);
+    io.emit("update", state);
   });
 
   /*
@@ -95,19 +95,19 @@ io.on("connection", (socket) => {
       console.log("progress state:", state.questions[index].status);
     }
 
-    socket.emit("update", state);
+    io.emit("update", state);
   });
 
   socket.on("add_ta", (newTA: Student) => {
     state.tas.push(newTA);
 
-    socket.emit("update", state);
+    io.emit("update", state);
   });
 
   socket.on("remove_ta", (currTa: Student) => {
     state.tas = state.tas.filter((ta) => currTa.id !== ta.id);
 
-    socket.emit("update", state);
+    io.emit("update", state);
   });
 });
 
