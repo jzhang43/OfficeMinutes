@@ -35,3 +35,12 @@ interface Question {
   location?: string;
 }
 ```
+
+Update State:
+
+- Joins Queue
+- Leaves Queue
+- Joins Group
+- Leaves Group
+- Edit Group
+- TA Duty

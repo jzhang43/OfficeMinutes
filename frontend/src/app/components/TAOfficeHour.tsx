@@ -1,12 +1,14 @@
 "use client";
 
 import React from "react";
-import { type OfficeHour, Status } from "@/types";
+import { type OfficeHour, Status, Student } from "@/types";
 import Queue from "./Queue";
 import { TAQuestionPost } from "./TAQuestionPost";
 import { Header } from "./Header";
 import JoinModal from "./JoinModal";
 import CurrentGroup from "./CurrentGroup";
+import { connect } from "socket.io-client";
+import { Session } from "next-auth";
 
 const STATE: OfficeHour = {
   questions: [
@@ -89,17 +91,57 @@ const STATE: OfficeHour = {
 };
 
 interface OfficeHourProps {
-  backendUrl: string;
   course: { id: string; title: string; userIds: string[] };
+  ws: any;
+  state: OfficeHour | null;
+  student: Student | null;
 }
 
 const OfficeHourTA = (props: OfficeHourProps) => {
-  const { backendUrl, course } = props;
-  const [officeHourState, setOfficeHourState] = React.useState(STATE);
+  const { course, state: officeHourState, ws, student } = props;
+  // const [officeHourState, setOfficeHourState] =
+  //   React.useState<OfficeHour | null>(state);
   const [showModal, setShowModal] = React.useState<boolean>(false);
+
+  const buttonRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (buttonRef.current !== null && student !== null) {
+      (buttonRef.current as any).click();
+    }
+  }, [buttonRef, student]);
+
+  // React.useEffect(() => {
+  //   console.log(state);
+  //   if (state !== null) {
+  //     setOfficeHourState(state);
+  //   }
+  // }, [state]);
+
+  // React.useEffect(() => {
+  //   if (student !== null) {
+  //     console.log("student", student);
+  //     console.log(ws.current);
+  //     ws.current?.emit("add_ta", student);
+  //   }
+  // }, [student, ws]);
+
+  if (officeHourState === null) {
+    return <></>;
+  }
 
   return (
     <div className="h-full w-full relative">
+      <button
+        className="hidden"
+        onClick={() => {
+          console.log("Clicking");
+          console.log("student", student);
+          console.log(ws.current);
+          ws.current?.emit("add_ta", student);
+        }}
+        ref={buttonRef}
+      />
       <Header
         headerLeft={
           <div className="text-4xl font-bold">{course.title} Office Hours</div>
