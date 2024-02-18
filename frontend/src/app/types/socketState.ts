@@ -25,5 +25,4 @@ export interface Question {
   students: Student[];
   private: boolean;
   status: Status;
-  location?: string;
 }

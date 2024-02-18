@@ -6,6 +6,15 @@ import { SignInButton } from "./components/SignInButton";
 import { Header } from "./components/Header";
 import { signIn } from "next-auth/react";
 
+// On mount, want to send a message to server indicating who u are
+// On unmount, want to send a message to say remove from server
+
+// { course: State }
+// State = { queue: names[], listeners: string[], questions: Question[] }
+// Question = {
+//  id: string, question: string, tags: string[], people: names[], location: string
+//}
+
 export default function Home() {
   return (
     <div className="h-full w-full overflow-hidden">

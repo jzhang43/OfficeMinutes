@@ -94,9 +94,10 @@ const STATE: OfficeHour = {
     },
   ],
 };
+import React, { useRef } from "react";
 import { connect, io } from "socket.io-client";
 import { Question, Status } from "../types/socketState";
-import { socket } from "../socket";
+import { useWs } from "../hooks";
 
 interface OfficeHourProps {
   backendUrl: string;
@@ -133,6 +134,92 @@ const OfficeHour = (props: OfficeHourProps) => {
   };
 
   const { data: session } = useSession();
+  // if (!socket.connected) {
+  //   console.log("Not connected");
+  const { ws, state } = useWs({ url: backendUrl });
+
+  // React.useEffect(() => {
+  //   if (ws.current?.connected) {
+  //     ws.current.emit("oh_req", {
+  //       message: "hello course",
+  //       socketId: ws.current.id,
+  //     });
+  //     // ws.current.on("oh_res", (message) => console.log(message));
+  //   }
+  // }, [ws]);
+
+  // const [queue, setQueue] = React.useState([]);
+  // const ws = useRef<null | ReturnType<typeof connect>>(null);
+  // // const [iosocket, setIoSocket] = React.useState<null | ReturnType<
+  // //   typeof connect
+  // // >>(null);
+
+  // React.useEffect(() => {
+  //   // if (iosocket !== null) {
+  //   //   return;
+  //   // }
+  //   const socket = connect("http://localhost:8000");
+  //   ws.current = socket;
+
+  //   socket.on("connect", () => {
+  //     console.log("Websocket connect");
+  //   });
+  //   // const socket = connect(`${props.backendUrl}`);
+  //   // setIoSocket(socket);
+
+  //   // socket.on("connect", () => {
+  //   //   socket.emit("oh_req", { message: "hello course", socketId: socket.id });
+  //   //   socket.on("oh_res", (message) => console.log(message));
+
+  //   //   // socket.emit("join_queue", {
+  //   //   //   socketId: socket.id,
+  //   //   //   new_question: new_question,
+  //   //   // });
+  //   //   // socket.on("join_queue_res", (new_queue) => {
+  //   //   //   setQueue(new_queue);
+  //   //   //   console.log("Client Side " + new_queue);
+  //   //   //   console.log("Last " + new_queue[new_queue.length - 1].location);
+  //   //   // });
+
+  //   //   // socket.emit("join_queue", {
+  //   //   //   socketId: socket.id,
+  //   //   //   new_question: new_question2,
+  //   //   // });
+  //   //   // socket.on("join_queue_res", (new_queue) => {
+  //   //   //   setQueue(new_queue);
+  //   //   //   console.log("Client Side " + new_queue);
+  //   //   //   console.log("Last " + new_queue[new_queue.length - 1].question);
+  //   //   // });
+  //   // });
+
+  //   // window.addEventListener("beforeunload", () => {
+  //   //   socket.emit("on_reload", { socketId: socket.id });
+  //   // });
+
+  //   // return () => {
+  //   //   window.removeEventListener("beforeunload", () => {
+  //   //     console.log("removing event listening");
+  //   //     socket.emit("on_reload", { socketId: socket.id });
+  //   //   });
+  //   // };
+  //   return () => {
+  //     socket.close();
+  //     socket.disconnect();
+  //   };
+  // }, []);
+
+  // // if (!socket.connected) {
+  // //   console.log("Not connected");
+  // //   return <></>;
+  // // }
+
+  React.useEffect(() => {
+    console.log(state);
+  }, [state]);
+
+  if (ws === null) {
+    return <></>;
+  }
 
   return (
     <div className="h-full w-full relative">
