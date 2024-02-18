@@ -110,7 +110,6 @@ const new_question: Question = {
   students: [],
   private: false,
   status: Status.WAITING,
-  location: "140 W Adams",
 };
 
 const new_question2: Question = {
@@ -119,7 +118,6 @@ const new_question2: Question = {
   students: [],
   private: true,
   status: Status.WAITING,
-  location: "200 Boston",
 };
 
 const OfficeHour = (props: OfficeHourProps) => {

@@ -45,8 +45,18 @@ io.on("connection", (socket) => {
     }
   );
 
-  socket.on("join_queue", (question: Question) => {
-    state.questions.push(questio);
+  socket.on("join_queue", (newQuestion: Question) => {
+    const index = state.questions.findIndex(
+      (question) => newQuestion.question === question.question
+    );
+
+    if (index === -1) {
+      state.questions.push(newQuestion);
+    } else {
+      state.questions[index] = newQuestion;
+    }
+
+    socket.emit("join_queue_res");
   });
 
   // console.log("User connected" + socket.id);
