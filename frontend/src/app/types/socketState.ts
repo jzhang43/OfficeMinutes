@@ -1,32 +1,25 @@
-# OfficeMinutes
-
-JumboHacks 2024
-
-## Server State
-
-```ts
-enum Status {
+export enum Status {
   WAITING,
   IN_PROGRESS,
   DONE,
 }
 
-interface State {
+export interface State {
   courseId: OfficeHour;
 }
 
-interface OfficeHour {
+export interface OfficeHour {
   questions: Question[];
   tas: Student[];
   location: string;
 }
 
-interface Student {
+export interface Student {
   name: string;
   socketId: string;
 }
 
-interface Question {
+export interface Question {
   question: string;
   tags: string[];
   students: Student[];
@@ -34,13 +27,3 @@ interface Question {
   status: Status;
   location?: string;
 }
-```
-
-Update State:
-
-- Joins Queue
-- Leaves Queue
-- Joins Group
-- Leaves Group
-- Edit Group
-- TA Duty

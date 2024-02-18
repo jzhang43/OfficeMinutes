@@ -94,11 +94,32 @@ const STATE: OfficeHour = {
     },
   ],
 };
+import { connect, io } from "socket.io-client";
+import { Question, Status } from "../types/socketState";
+import { socket } from "../socket";
 
 interface OfficeHourProps {
   backendUrl: string;
   course: { id: string; title: string; userIds: string[] };
 }
+
+const new_question: Question = {
+  question: "",
+  tags: ["1", "2"],
+  students: [],
+  private: false,
+  status: Status.WAITING,
+  location: "140 W Adams",
+};
+
+const new_question2: Question = {
+  question: "newQuestion2",
+  tags: [],
+  students: [],
+  private: true,
+  status: Status.WAITING,
+  location: "200 Boston",
+};
 
 const OfficeHour = (props: OfficeHourProps) => {
   const { backendUrl, course } = props;
