@@ -9,6 +9,8 @@ interface Props {
   question: Question;
   setQuestion: Dispatch<SetStateAction<Question>>;
   setTagIndex?: Dispatch<SetStateAction<number>>;
+  isError?: boolean;
+  setIsError?: Dispatch<SetStateAction<boolean>>;
 }
 
 const TagsSelector = ({
@@ -22,24 +24,27 @@ const TagsSelector = ({
     const updatedQuestion = { ...question };
 
     if (newTag === "Follow-up Question") {
-      updatedQuestion.tags = updatedQuestion.tags.filter(
-        (tag) => tag !== "HW Help" && tag !== "Conceptual Help"
-      );
-      updatedQuestion.tags.push(newTag);
+      updatedQuestion.tags = updatedQuestion.tags.includes(newTag)
+        ? updatedQuestion.tags.filter((tag) => tag !== newTag)
+        : [
+            ...updatedQuestion.tags.filter(
+              (tag) => tag !== "Conceptual Help" && tag !== "HW Help"
+            ),
+            newTag,
+          ];
     } else if (newTag === "HW Help" || newTag === "Conceptual Help") {
-      updatedQuestion.tags = updatedQuestion.tags.filter(
-        (tag) => tag !== "Follow-up Question"
-      );
-      updatedQuestion.tags.push(newTag);
+      updatedQuestion.tags = updatedQuestion.tags.includes(newTag)
+        ? updatedQuestion.tags.filter((tag) => tag !== newTag)
+        : [
+            ...updatedQuestion.tags.filter(
+              (tag) => tag !== "Follow-up Question"
+            ),
+            newTag,
+          ];
     } else {
-      // Remove the tag if it already exists
-      if (updatedQuestion.tags.includes(newTag)) {
-        updatedQuestion.tags = updatedQuestion.tags.filter(
-          (tag) => tag !== newTag
-        );
-      } else {
-        updatedQuestion.tags.push(newTag);
-      }
+      updatedQuestion.tags = updatedQuestion.tags.includes(newTag)
+        ? updatedQuestion.tags.filter((tag) => tag !== newTag)
+        : [...updatedQuestion.tags, newTag];
     }
 
     setQuestion(updatedQuestion);
@@ -48,7 +53,7 @@ const TagsSelector = ({
 
   return (
     <>
-      <span className=" text-gray-600/70 text-base font-normal">{title}</span>
+      <span className="text-gray-600/70 text-base font-normal">{title}</span>
       <div className="flex flex-row gap-2.5 mt-2.5">
         {tags.map((tag, index) => (
           <button
