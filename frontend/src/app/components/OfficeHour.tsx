@@ -4,6 +4,7 @@ import React from "react";
 import { type OfficeHour, Status } from "@/types";
 import Queue from "./Queue";
 import { QuestionPost } from "./QuestionPost";
+import { Header } from "./Header";
 
 const STATE: OfficeHour = {
   questions: [
@@ -24,6 +25,8 @@ const STATE: OfficeHour = {
           socketId: "21312321",
         },
       ],
+      description:
+        "Could someone explain why node 17 becomes the child of 15? I understand that we cannot have 2 trees with degree 2, but I was inclined to make 20 the child of 15.",
       private: false,
       status: Status.IN_PROGRESS,
       location: "here",
@@ -37,6 +40,7 @@ const STATE: OfficeHour = {
           socketId: "21312321",
         },
       ],
+      description: "I love math",
       private: false,
       status: Status.WAITING,
       location: "here",
@@ -54,6 +58,7 @@ const STATE: OfficeHour = {
           socketId: "23132121",
         },
       ],
+      description: "I love alcohol",
       private: false,
       status: Status.WAITING,
       location: "here",
@@ -83,12 +88,16 @@ const OfficeHour = (props: OfficeHourProps) => {
 
   return (
     <div className="h-full w-full">
-      <div className="flex justify-between items-center py-4 px-12 bg-[#393939] text-white">
-        <div className="text-4xl font-bold">{course.title} Office Hours</div>
-        <div className="bg-[#2196F3] px-6 py-4 rounded uppercase text-sm shadow-sm cursor-pointer">
-          Join Queue
-        </div>
-      </div>
+      <Header
+        headerLeft={
+          <div className="text-4xl font-bold">{course.title} Office Hours</div>
+        }
+        headerRight={
+          <div className="bg-[#2196F3] px-6 py-4 rounded uppercase text-sm shadow-sm cursor-pointer">
+            Join Queue
+          </div>
+        }
+      />
       <div className="grid grid-cols-12 px-12 py-6">
         <div className="col-span-9 flex flex-col gap-y-4">
           <div className="grid grid-cols-12">
@@ -126,7 +135,7 @@ const OfficeHour = (props: OfficeHourProps) => {
             </div>
             <div>HW Help Conceptual Help</div>
           </div>
-          <div className="grid grid-cols-2 gap-1">
+          <div className="grid grid-cols-2 gap-2">
             {officeHourState.questions.map((question, idx) => (
               <div key={idx} className="col-span-1">
                 <QuestionPost key={idx} question={question} />

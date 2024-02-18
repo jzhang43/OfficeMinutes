@@ -19,6 +19,7 @@ interface Question {
   question: string;
   tags: string[];
   students: Student[];
+  description: String;
   private: boolean;
   status: Status;
   location?: string;

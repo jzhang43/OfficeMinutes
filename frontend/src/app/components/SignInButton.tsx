@@ -5,7 +5,6 @@ export const SignInButton = () => {
   const { data: session } = useSession();
 
   if (session && session.user) {
-    console.log(session);
     return (
       <div>
         <button onClick={() => signOut()}>Sign Out</button>
