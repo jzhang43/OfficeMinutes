@@ -44,3 +44,14 @@ Update State:
 - Leaves Group
 - Edit Group
 - TA Duty
+
+## Env File
+
+```
+DATABASE_URL=""
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+NEXTAUTH_URL=""
+NEXTAUTH_SECRET=""
+BACKEND_URL=""
+```
