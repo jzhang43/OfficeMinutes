@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import http from "http";
 import socket from "socket.io";
-import { OfficeHour, Question } from "../types";
+import { OfficeHour, Question, Student } from "../types";
 
 interface Connection {
   name: string;
@@ -56,42 +56,59 @@ io.on("connection", (socket) => {
       state.questions[index] = newQuestion;
     }
 
-    socket.emit("join_queue_res");
+    console.log("progress state:", state.questions[0].status);
+
+    socket.emit("update", state);
   });
 
-  // console.log("User connected" + socket.id);
+  /*
+      Leaving a queue from student POV
+      Mark as done removes Question from Questions[]
+  */
+  socket.on("leave_queue", (oldQuestion: Question) => {
+    if (oldQuestion.students.length === 0) {
+      state.questions = state.questions.filter(
+        (question) => question.question !== oldQuestion.question
+      );
+    } else {
+      const index = state.questions.findIndex(
+        (question) => oldQuestion.question === question.question
+      );
+      state.questions[index] = oldQuestion;
+      console.log(state.questions[index].students);
+    }
+    socket.emit("update", state);
+  });
 
-  // users.push(socket.id);
+  /*
+    If newQuestion in list, that means its currently marked as waiting,
+    then just update with newQuestion
+  */
+  socket.on("in_progress", (newQuestion: Question) => {
+    const index = state.questions.findIndex(
+      (question) => newQuestion.question === question.question
+    );
 
-  // socket.on("join", ({ id }) => {
-  //   console.log("User ", id, "joined");
-  // });
+    if (index !== -1) {
+      state.questions[index] = newQuestion;
 
-  // socket.on("oh_req", ({ message, socketId }) => {
-  //   console.log("Hello", users, socketId);
-  //   users
-  //     .filter((id) => socketId !== id)
-  //     .forEach(() => io.sockets.to(socketId).emit("oh_res", message));
-  // });
+      console.log("progress state:", state.questions[index].status);
+    }
 
-  // socket.on("on_reload", ({ socketId }) => {
-  //   users = users.filter((id) => socketId !== id);
-  //   // console.log(users);
-  // });
+    socket.emit("update", state);
+  });
 
-  // socket.on("join", () => {
-  //   console.log("Connecting");
-  //   users.forEach((user) => io.sockets.to(user).emit("update", []));
-  // });
+  socket.on("add_ta", (newTA: Student) => {
+    state.tas.push(newTA);
 
-  // socket.on("join_queue", ({ socketId, new_question }) => {
-  //   queue.push(new_question);
-  //   // console.log("Server Q" + queue);
-  //   console.log("First: ", queue[0]);
-  //   users.forEach(() => io.sockets.to(socketId).emit("join_queue_res", queue));
-  //   // .filter((id) => socketId !== id)
-  //   // .forEach(() => io.sockets.to(socketId).emit("join_queue_res", queue));
-  // });
+    socket.emit("update", state);
+  });
+
+  socket.on("remove_ta", (currTa: Student) => {
+    state.tas = state.tas.filter((ta) => currTa.id !== ta.id);
+
+    socket.emit("update", state);
+  });
 });
 
 server.listen(PORT, () => {

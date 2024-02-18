@@ -16,7 +16,8 @@ export interface OfficeHour {
 
 export interface Student {
   name: string;
-  socketId: string;
+  id: string;
+  socket: string;
 }
 
 export interface Question {
