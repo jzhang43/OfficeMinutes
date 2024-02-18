@@ -53,7 +53,7 @@ const TagsSelector = ({
 
   return (
     <>
-      <span className="text-gray-600/70 text-base font-normal">{title}</span>
+      <span className="text-black text-base font-normal">{title}</span>
       <div className="flex flex-row gap-2.5 mt-2.5">
         {tags.map((tag, index) => (
           <button
