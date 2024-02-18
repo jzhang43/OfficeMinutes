@@ -26,8 +26,9 @@ const StageOneModal = ({
   setShowModal,
 }: ModalStageProps) => {
   const [generalTagIndex, setGeneralTagIndex] = useState<number>(-1);
+
   const handleStageChange = () => {
-    if (stage == 3) {
+    if (stage === 3) {
       setStage(1);
     } else {
       setStage(stage + 1);
@@ -107,7 +108,7 @@ const StageOneModal = ({
         </div>
 
         <button
-          className="px-5 py-2 mt-8 w-full rounded-[4px] bg-gray-300 text-gray-500 text-sm hover:bg-[#2196F3] hover:text-white"
+          className="px-5 py-2 mt-8 w-full rounded-[4px] bg-gray-300 text-gray-500 text-sm hover:bg-primary hover:text-white"
           onClick={() => handleStageChange()}
         >
           NEXT

@@ -15,6 +15,10 @@ const config: Config = {
         tile: "0px 3px 6px 0px rgba(0, 0, 0, 0.25)",
         question: "0px 3px 6px 0px rgba(0, 0, 0, 0.25)",
       },
+      colors: {
+        primary: "#2196F3",
+        secondary: "#BDBDBD",
+      },
     },
   },
   plugins: [],
