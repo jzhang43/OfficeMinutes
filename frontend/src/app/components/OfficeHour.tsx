@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { type OfficeHour, Status } from "@/types";
+import { type OfficeHour, Status, Question } from "@/types";
 import Queue from "./Queue";
 import { QuestionPost } from "./QuestionPost";
 import { Header } from "./Header";
@@ -106,12 +106,24 @@ const OfficeHour = (props: OfficeHourProps) => {
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [clickedLeaveQueue, setClickedLeaveQueue] = React.useState(false);
   const [hoverStyle, setHoverStyle] = React.useState(false);
+  const [currQuestion, setCurrQuestion] = React.useState<Question | null>(null);
 
   const onHover = () => {
     setHoverStyle(!hoverStyle);
   };
 
   const { data: session } = useSession();
+
+  React.useEffect(() => {
+    STATE.questions.forEach((q, index) => {
+      q.students.forEach((element) => {
+        if (session !== null && element.id === session.user.id) {
+          setCurrQuestion(q);
+          //   setCurrIndex(index);
+        }
+      });
+    });
+  }, [session, STATE]);
 
   return (
     <div className="h-full w-full relative">
@@ -232,6 +244,11 @@ const OfficeHour = (props: OfficeHourProps) => {
             <div className="font-bold text-xl tracking-wider">
               Are you sure you want to leave the queue?
             </div>
+            {currQuestion && (
+              <div className={"text-[#393939] text-sm tracking-wide"}>
+                This won't remove other people from your group.
+              </div>
+            )}
             <button
               onMouseEnter={onHover}
               onMouseLeave={onHover}
