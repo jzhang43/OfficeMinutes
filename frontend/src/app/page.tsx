@@ -6,11 +6,9 @@ import { SignInButton } from "./components/SignInButton";
 import { Header } from "./components/Header";
 import { signIn } from "next-auth/react";
 
-const socket = connect("http://localhost:8000");
-
 export default function Home() {
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full overflow-hidden">
       <Header />
       <div className="h-full w-full flex flex-col items-center justify-center">
         <div className="flex flex-col gap-y-2 mb-16 items-center">
