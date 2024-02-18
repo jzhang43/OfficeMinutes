@@ -10,17 +10,18 @@ export interface OfficeHour {
   location: string;
 }
 
-interface Student {
+export interface Student {
   name: string;
-  socketId: string;
+  id: string;
+  socket: string;
 }
 
-interface Question {
+export interface Question {
   question: string;
   tags: string[];
   students: Student[];
   description: String;
   private: boolean;
   status: Status;
-  location?: string;
+  time: String;
 }

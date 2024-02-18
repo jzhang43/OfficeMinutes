@@ -29,7 +29,7 @@ export default async function RootLayout({
     <html lang="en">
       <SessionProvider session={session}>
         <body
-          className={`${roboto.className} h-screen w-screen overflow-hidden overscroll-none`}
+          className={`${roboto.className} h-screen w-screen overscroll-none`}
         >
           {children}
         </body>

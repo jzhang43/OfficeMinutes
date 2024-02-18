@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { type OfficeHour, Status } from "@/types";
 
@@ -12,11 +10,11 @@ export default function Queue({ state }: Props) {
   const options = { timeZone: "America/New_York" };
 
   return (
-    <div className="flex flex-col px-6 h-[677px] w-full gap-3 border-l-2">
-      <div className="flex flex-row justify-between text-center">
-        <span className="font-bold text-xl">Queue</span>
+    <div className="flex flex-col gap-3 py-3">
+      <div className="flex flex-row justify-between text-center items-center">
+        <span className="font-bold text-2xl">Queue</span>
         <span className=" font-medium text-[#BDBDBD] text-sm leading-6">
-          As of {new Date(now).toLocaleTimeString("en-US", options)}
+          As of {new Date(now).toISOString().split("T")[0]}
         </span>
       </div>
       {state.questions.map((question, index) => (

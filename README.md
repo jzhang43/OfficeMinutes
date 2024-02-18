@@ -30,7 +30,7 @@ interface Question {
   question: string;
   tags: string[];
   students: Student[];
-  private:2boolean;
+  private: boolean;
   status: Status;
   location?: string;
 }
