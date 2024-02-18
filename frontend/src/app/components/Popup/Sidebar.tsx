@@ -12,7 +12,7 @@ const Sidebar = ({ children }: SidebarProps) => {
   return (
     <>
       {!visible && (
-        <div className="sticky lg:hidden block absolute z-50 right-0 top-1/2 -translate-y-1/2">
+        <div className="sticky lg:hidden block z-50 right-0 top-1/2 -translate-y-1/2">
           <button onClick={() => setVisible(true)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -31,9 +31,11 @@ const Sidebar = ({ children }: SidebarProps) => {
           </button>
         </div>
       )}
-      <div className="lg:block hidden">{children}</div>
+      <div className="sticky overflow-x-hidden overflow-y-scroll lg:block hidden">
+        {children}
+      </div>
       {visible && (
-        <div className="absolute h-full z-50 lg:hidden block shadow-tile">
+        <div className="absolute w-full h-full z-50 lg:hidden block shadow-tile">
           {/* <div className="w-96">hi</div> */}
           {children}
           {/* <div className="w-32">{children}</div> */}

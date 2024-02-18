@@ -62,8 +62,6 @@ io.on("connection", (socket) => {
       state.questions[index] = newQuestion;
     }
 
-    console.log("progress state:", state.questions[0].status);
-
     io.emit("update", state);
   });
 
@@ -71,18 +69,29 @@ io.on("connection", (socket) => {
       Leaving a queue from student POV
       Mark as done removes Question from Questions[]
   */
-  socket.on("leave_queue", (oldQuestion: Question) => {
-    if (oldQuestion.students.length === 0) {
-      state.questions = state.questions.filter(
-        (question) => question.question !== oldQuestion.question
-      );
-    } else {
-      const index = state.questions.findIndex(
-        (question) => oldQuestion.question === question.question
-      );
-      state.questions[index] = oldQuestion;
-      console.log(state.questions[index].students);
-    }
+  socket.on("leave_queue", (student: Student) => {
+    state.questions.forEach(
+      (question) =>
+        (question.students = question.students.filter(
+          (currStudent) => currStudent.id !== student.id
+        ))
+    );
+
+    state.questions = state.questions.filter(
+      (question) => question.students.length !== 0
+    );
+
+    // if (oldQuestion.students.length === 0) {
+    //   state.questions = state.questions.filter(
+    //     (question) => question.question !== oldQuestion.question
+    //   );
+    // } else {
+    //   const index = state.questions.findIndex(
+    //     (question) => oldQuestion.question === question.question
+    //   );
+    //   state.questions[index] = oldQuestion;
+    //   console.log(state.questions[index].students);
+    // }
     io.emit("update", state);
   });
 
@@ -97,8 +106,20 @@ io.on("connection", (socket) => {
 
     if (index !== -1) {
       state.questions[index] = newQuestion;
+    }
 
-      console.log("progress state:", state.questions[index].status);
+    io.emit("update", state);
+  });
+
+  socket.on("done", (question: Question) => {
+    const questions = state.questions;
+
+    state.questions = [];
+
+    for (const q of questions) {
+      if (q.question !== question.question) {
+        state.questions.push(q);
+      }
     }
 
     io.emit("update", state);

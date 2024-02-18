@@ -1,35 +1,19 @@
 "use client";
 
+import { WebsocketContext } from "@/context";
 import { useWs } from "../hooks";
 import OfficeHour from "./OfficeHour";
-import TAOfficeHour from "./TAOfficeHour";
+import TaOfficeHour from "./TAOfficeHour";
+import React from "react";
 
-interface OfficeHourWrapperProps {
-  course: {
-    id: string;
-    title: string;
-    code: string;
-    userIds: string[];
-  };
-  searchParams?: { [key: string]: string };
-  backendUrl: string;
-}
+const OfficeHourWrapper = () => {
+  const { course, ws, state, student, role } =
+    React.useContext(WebsocketContext);
 
-const OfficeHourWrapper = (props: OfficeHourWrapperProps) => {
-  const { course, searchParams, backendUrl } = props;
-
-  const { ws, state, student } = useWs({ url: backendUrl });
-
-  if (ws.current?.connected) {
-    if (searchParams && searchParams.role === "ta") {
-      return (
-        <TAOfficeHour course={course} ws={ws} state={state} student={student} />
-      );
-    } else {
-      return <OfficeHour course={course} ws={ws} state={state} />;
-    }
+  if (role === "student") {
+    return <OfficeHour />;
   } else {
-    return null;
+    return <TaOfficeHour />;
   }
 };
 

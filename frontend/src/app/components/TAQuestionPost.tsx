@@ -2,17 +2,25 @@
 
 import React, { useState } from "react";
 import { type OfficeHour, Status } from "@/types";
-import { trimName } from "../utils";
+import { WebsocketContext } from "@/context";
 
 interface QuestionPostProps {
   question: OfficeHour["questions"][number];
+  ws: any;
 }
 
 export const TAQuestionPost = (props: QuestionPostProps) => {
-  const [started, setToStarted] = useState(false);
+  const { ws } = props;
 
-  const onClick = () => {
-    setToStarted(!started);
+  const onStart = () => {
+    ws.current.emit("in_progress", {
+      ...props.question,
+      status: Status.IN_PROGRESS,
+    });
+  };
+
+  const onDone = () => {
+    ws.current.emit("done", { ...props.question });
   };
 
   return (
@@ -23,7 +31,8 @@ export const TAQuestionPost = (props: QuestionPostProps) => {
             {props.question.question}
           </div>
           <div className="text-[#393939]">
-            {trimName(props.question.students[0].name)}
+            {props.question.students.length > 0 &&
+              props.question.students[0].name}
           </div>
         </div>
 
@@ -44,7 +53,6 @@ export const TAQuestionPost = (props: QuestionPostProps) => {
           </div>
         </div>
       </div>
-
       {!props.question.private && (
         <div className="flex flex-col py-3">
           <div className="w-full h-0.5 bg-[#0000001F]" />
@@ -60,13 +68,25 @@ export const TAQuestionPost = (props: QuestionPostProps) => {
       <div className="justify-end">
         <button
           className={`w-full uppercase py-4 text-sm rounded shadow-md ${
-            started
+            props.question.status === Status.WAITING
+              ? "bg-[#1E88E5] text-white"
+              : props.question.status === Status.IN_PROGRESS
               ? "border-[#0288D1] border-2 text-[#0288D1]"
-              : "bg-[#1E88E5] text-white"
+              : "border-[#D32F2F] border-2 text-[#D32F2F]"
           }`}
-          onClick={onClick}
+          onClick={
+            props.question.status === Status.WAITING
+              ? onStart
+              : props.question.status === Status.IN_PROGRESS
+              ? onDone
+              : () => {}
+          }
         >
-          {started ? "Mark as done" : "Start helping"}
+          {props.question.status === Status.WAITING
+            ? "Start helping"
+            : props.question.status === Status.IN_PROGRESS
+            ? "Mark as done"
+            : "Done"}
         </button>
 
         {/* IN CASE WE WANT MORE BUTTONS /*}

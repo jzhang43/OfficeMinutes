@@ -19,7 +19,8 @@ export default function Queue({ state }: Props) {
       </div>
       {state.questions.map((question, index) => (
         <span className="font-normal text-base" key={index}>
-          {index + 1}. {trimName(question.students[0].name)}
+          {index + 1}.{" "}
+          {question.private ? question.students[0].name : question.question}
         </span>
       ))}
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { type OfficeHour, Status, Question } from "@/types";
+import React, { MutableRefObject } from "react";
+import { type OfficeHour, Status, Question, Student } from "@/types";
 import Queue from "./Queue";
 import { QuestionPost } from "./QuestionPost";
 import { Header } from "./Header";
@@ -9,6 +9,8 @@ import JoinModal from "./JoinModal";
 import CurrentGroup from "./CurrentGroup";
 import { useSession } from "next-auth/react";
 import { Sidebar } from "./Popup";
+import { Socket } from "socket.io-client";
+import { WebsocketContext } from "@/context";
 
 const STATE: OfficeHour = {
   questions: [
@@ -95,18 +97,22 @@ const STATE: OfficeHour = {
   ],
 };
 
-interface OfficeHourProps {
-  backendUrl: string;
-  course: { id: string; title: string; userIds: string[] };
-}
+interface OfficeHourProps {}
 
 const OfficeHour = (props: OfficeHourProps) => {
-  const { backendUrl, course } = props;
-  const [officeHourState, setOfficeHourState] = React.useState(STATE);
+  const {
+    course,
+    state: officeHourState,
+    ws,
+    student,
+  } = React.useContext(WebsocketContext);
+
+  // const [officeHourState, setOfficeHourState] = React.useState(STATE);
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [clickedLeaveQueue, setClickedLeaveQueue] = React.useState(false);
   const [hoverStyle, setHoverStyle] = React.useState(false);
   const [currQuestion, setCurrQuestion] = React.useState<Question | null>(null);
+  const [currIndex, setCurrIndex] = React.useState<number | null>(null);
 
   const onHover = () => {
     setHoverStyle(!hoverStyle);
@@ -115,21 +121,36 @@ const OfficeHour = (props: OfficeHourProps) => {
   const { data: session } = useSession();
 
   React.useEffect(() => {
-    STATE.questions.forEach((q, index) => {
+    let found = false;
+    let q: any;
+    let index: any;
+    officeHourState.questions.forEach((q, index) => {
       q.students.forEach((element) => {
         if (session !== null && element.id === session.user.id) {
+          found = true;
           setCurrQuestion(q);
-          //   setCurrIndex(index);
+          setCurrIndex(index);
         }
       });
     });
-  }, [session, STATE]);
+
+    if (!found) {
+      setCurrQuestion(null);
+      setCurrIndex(null);
+    }
+  }, [session, officeHourState]);
+
+  if (officeHourState === null) {
+    return <></>;
+  }
 
   return (
     <div className="h-full w-full relative">
       <Header
         headerLeft={
-          <div className="text-4xl font-bold">{course.title} Office Hours</div>
+          <div className="text-4xl font-bold">
+            {course.code.toUpperCase()} Office Hours
+          </div>
         }
         headerRight={
           <div
@@ -142,13 +163,15 @@ const OfficeHour = (props: OfficeHourProps) => {
       />
       {showModal && (
         <JoinModal
-          state={STATE}
+          ws={ws}
+          state={officeHourState}
           showModal={showModal}
           setShowModal={setShowModal}
+          student={student}
         />
       )}
-      <div className="h-full w-full lg:grid lg:grid-cols-12 flex flex-col gap-x-4 pl-12 lg:pr-4">
-        <div className="lg:col-span-9 flex flex-col gap-y-4 py-6">
+      <div className="h-full w-full lg:grid lg:grid-cols-12 gap-x-4 lg:pl-12 lg:pr-4 px-4">
+        <div className="lg:col-span-9 col-span-12 flex flex-col gap-y-4 py-6">
           <div className="w-full border border-[#0288D1] rounded py-1 px-2 flex gap-x-3">
             <div>
               <svg
@@ -187,7 +210,7 @@ const OfficeHour = (props: OfficeHourProps) => {
               Location(s)
             </div>
             <div className="flex gap-x-2.5 lg:col-span-10 col-span-9">
-              {officeHourState.location}
+              JCC 4th Floor Huddle Room
             </div>
           </div>
           <div className="grid grid-cols-12">
@@ -207,18 +230,27 @@ const OfficeHour = (props: OfficeHourProps) => {
             </div>
           </div>
           <div className="h-full grid grid-cols-2 gap-6">
-            {officeHourState.questions.map((question, idx) => (
-              <div key={idx} className="lg:col-span-1 col-span-2">
-                <QuestionPost question={question} />
-              </div>
-            ))}
+            {officeHourState.questions
+              .filter((question) => question.private === false)
+              .map((question, idx) => (
+                <div key={idx} className="lg:col-span-1 col-span-2">
+                  <QuestionPost
+                    question={question}
+                    currQuestion={currQuestion}
+                    student={student}
+                  />
+                </div>
+              ))}
           </div>
         </div>
-        <div className="lg:col-span-3 h-full w-full lg:border-l-2 sticky overflow-x-hidden overflow-y-scroll px-6 py-8">
-          <Sidebar>
-            <CurrentGroup state={STATE} clickedConfirm={setClickedLeaveQueue} />
-            <Queue state={STATE} />
-          </Sidebar>
+        <div className="lg:col-span-3 h-full w-full lg:border-l-2 px-6 py-8 sticky overflow-x-hidden overflow-y-scroll lg:block hidden">
+          <CurrentGroup
+            state={officeHourState}
+            clickedConfirm={setClickedLeaveQueue}
+            currQuestion={currQuestion}
+            currIndex={currIndex}
+          />
+          <Queue state={officeHourState} />
         </div>
       </div>
       {clickedLeaveQueue && (
@@ -246,7 +278,7 @@ const OfficeHour = (props: OfficeHourProps) => {
             </div>
             {currQuestion && (
               <div className={"text-[#393939] text-sm tracking-wide"}>
-                This won't remove other people from your group.
+                This won&apos;t remove other people from your group.
               </div>
             )}
             <button
@@ -255,10 +287,14 @@ const OfficeHour = (props: OfficeHourProps) => {
               className={`w-full uppercase py-4 text-sm rounded shadow-md ${
                 hoverStyle
                   ? "border-[#0288D1] border-2 text-[#0288D1]"
-                  : "bg-[#1E88E5] text-white"
+                  : "bg-[#1E88E5] border-2 border-[#0288D1] text-white"
               }`}
-              /* IMPLEMENT LEAVE QUEUE STATE*/
-              onClick={() => setClickedLeaveQueue(false)}
+              onClick={() => {
+                setCurrQuestion(null);
+                setCurrIndex(null);
+                setClickedLeaveQueue(false);
+                ws.current?.emit("leave_queue", student);
+              }}
             >
               CONFIRM
             </button>

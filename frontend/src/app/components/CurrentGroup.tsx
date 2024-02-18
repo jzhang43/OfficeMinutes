@@ -8,15 +8,23 @@ import { trimName } from "../utils";
 interface Props {
   state: OfficeHour;
   clickedConfirm: React.Dispatch<React.SetStateAction<boolean>>;
+  currQuestion: Question | null;
+  currIndex: number | null;
 }
 
-export default function CurrentGroup({ state, clickedConfirm }: Props) {
+export default function CurrentGroup({
+  state,
+  currQuestion,
+  currIndex,
+  clickedConfirm,
+}: Props) {
   const { data: session } = useSession();
-  const [currQuestion, setCurrQuestion] = useState<Question | null>(null);
-  const [currIndex, setCurrIndex] = useState<number | null>(null);
+  // const [currQuestion, setCurrQuestion] = useState<Question | null>(null);
+  // const [currIndex, setCurrIndex] = useState<number | null>(null);
   const [hoverStyle, setHoverStyle] = useState(false);
   const [hoverStyle2, setHoverStyle2] = useState(false);
   //   const [showConfirm, setShowConfirm] = useState(false);
+  const [found, setFound] = useState(false);
 
   const onHover = () => {
     setHoverStyle(!hoverStyle);
@@ -30,21 +38,10 @@ export default function CurrentGroup({ state, clickedConfirm }: Props) {
     clickedConfirm(true);
   };
 
-  React.useEffect(() => {
-    state.questions.forEach((q, index) => {
-      q.students.forEach((element) => {
-        if (session !== null && element.id === session.user.id) {
-          setCurrQuestion(q);
-          setCurrIndex(index);
-        }
-      });
-    });
-  }, [session, state]);
-
   return (
     <div>
       <div className="flex flex-col gap-3">
-        {currQuestion && (
+        {currQuestion !== null ? (
           <>
             <div className="flex gap-x-2 w-full bg-[#EDF7ED] py-3 px-2.5 justify-center items-center">
               <svg
@@ -63,7 +60,9 @@ export default function CurrentGroup({ state, clickedConfirm }: Props) {
             </div>
             <div className="grid grid-cols-8">
               <div className="flex flex-col lg:col-span-3 col-span-8 items-center">
-                <div className="font-bold text-5xl">{currIndex}</div>
+                <div className="font-bold text-5xl">
+                  {currIndex !== null && currIndex + 1}
+                </div>
                 <div className="py-3 text-xs">On Queue</div>
               </div>
               <div className="flex gap-y-1 flex-col lg:col-span-5 col-span-8 text-center">
@@ -92,16 +91,22 @@ export default function CurrentGroup({ state, clickedConfirm }: Props) {
                 </button>
               </div>
             </div>
-            <div className="w-full h-0.5 bg-[#0000001F]" />
-            <div className="font-bold text-lg">{currQuestion?.question}:</div>
-            {currQuestion?.students.map((Student, index) => (
-              <span className="font-normal text-base" key={index}>
-                {index + 1}. {trimName(Student.name)}
-              </span>
-            ))}
+            {!currQuestion.private ? (
+              <>
+                <div className="w-full h-0.5 bg-[#0000001F]" />
+                <div className="font-bold text-lg">
+                  {currQuestion?.question}:
+                </div>
+                {currQuestion?.students.map((Student, index) => (
+                  <span className="font-normal text-base" key={index}>
+                    {index + 1}. {trimName(Student.name)}
+                  </span>
+                ))}
+              </>
+            ) : null}
             <div className="w-full h-0.5 bg-[#0000001F]" />
           </>
-        )}
+        ) : null}
       </div>
     </div>
   );

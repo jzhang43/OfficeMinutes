@@ -5,8 +5,10 @@ import TextField from "./TextField";
 import Checkbox from "./Checkbox";
 
 interface ModalProps {
+  ws: any;
   state: OfficeHour;
   showModal: boolean;
+  student: Student;
   setShowModal: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -27,6 +29,7 @@ interface ModalStageOneProps {
 interface ModalStageTwoProps {
   question: Question;
   setQuestion: Dispatch<SetStateAction<Question>>;
+  ws: any;
   state: OfficeHour;
   tagIndex: number;
   setShowModal: Dispatch<SetStateAction<boolean>>;
@@ -118,7 +121,7 @@ const StageOneModal = ({
         </div>
 
         <button
-          className="px-5 py-2 mt-8 w-full rounded-[4px] bg-gray-300 text-gray-500 text-sm hover:bg-primary hover:text-white"
+          className="px-5 py-2 mt-8 w-full rounded-[4px] text-sm bg-primary text-white hover:bg-gray-300 hover:text-gray-500"
           onClick={() => handleStageChange()}
         >
           NEXT
@@ -131,6 +134,7 @@ const StageOneModal = ({
 const StageTwoSubmitModal = ({
   question,
   setQuestion,
+  ws,
   state,
   tagIndex,
   setShowModal,
@@ -158,8 +162,9 @@ const StageTwoSubmitModal = ({
     } else {
       updatedQuestion.question = questionText;
       updatedQuestion.description = descriptionText;
-      updatedQuestion.private = true;
+      updatedQuestion.private = !isGroup;
       setQuestion(updatedQuestion);
+      ws.current?.emit("join_queue", updatedQuestion);
       setShowModal(false);
     }
   };
@@ -214,7 +219,7 @@ const StageTwoSubmitModal = ({
         <div className="flex flex-row">
           <Checkbox checked={isGroup} onChange={onChecked} />
           <div className="flex flex-col ml-2.5">
-            <span className="text-base font-normal">Join Queue as a Group</span>
+            <span className="text-base font-normal">Make question public</span>
             <span className=" text-xs font-normal text-gray-500 mt-1">
               Your question will be posted on the Group Question Board. This
               will allow up to 5 people to join your TA session if they have
@@ -225,7 +230,10 @@ const StageTwoSubmitModal = ({
 
         <button
           className="px-5 py-2 mt-8 w-full rounded-[4px] text-white bg-primary text-sm hover:bg-gray-300 hover:text-black"
-          onClick={() => handleQuestionUpdate()}
+          onClick={() => {
+            handleQuestionUpdate();
+            // ws.current?.emit("join_queue", question);
+          }}
         >
           SUBMIT
         </button>
@@ -237,6 +245,7 @@ const StageTwoSubmitModal = ({
 const StageTwoFollowUpModal = ({
   question,
   setQuestion,
+  ws,
   state,
   tagIndex,
   setShowModal,
@@ -263,8 +272,12 @@ const StageTwoFollowUpModal = ({
     } else {
       updatedQuestion.question = questionText;
       updatedQuestion.description = descriptionText;
-      updatedQuestion.private = true;
+      updatedQuestion.private = question.private;
+
       setQuestion(updatedQuestion);
+
+      ws.current?.emit("join_queue", updatedQuestion);
+
       setShowModal(false);
     }
   };
@@ -323,7 +336,10 @@ const StageTwoFollowUpModal = ({
 
         <button
           className="px-5 py-2 mt-8 w-full rounded-[4px] text-white bg-primary text-sm hover:bg-gray-300 hover:text-black"
-          onClick={() => handleQuestionUpdate()}
+          onClick={() => {
+            handleQuestionUpdate();
+            // ws.current?.emit("join_queue", question);
+          }}
         >
           SUBMIT
         </button>
@@ -332,7 +348,13 @@ const StageTwoFollowUpModal = ({
   );
 };
 
-const JoinModal = ({ state, showModal, setShowModal }: ModalProps) => {
+const JoinModal = ({
+  ws,
+  state,
+  showModal,
+  setShowModal,
+  student,
+}: ModalProps) => {
   const options = { timeZone: "America/New_York" };
   const [stage, setStage] = useState<number>(1);
   const [generalTagIndex, setGeneralTagIndex] = useState<number>(-1);
@@ -348,7 +370,7 @@ const JoinModal = ({ state, showModal, setShowModal }: ModalProps) => {
   const [question, setQuestion] = useState<Question>({
     question: "",
     tags: [],
-    students: [],
+    students: [student],
     description: "",
     private: false,
     status: Status.WAITING,
@@ -377,6 +399,7 @@ const JoinModal = ({ state, showModal, setShowModal }: ModalProps) => {
         <StageTwoSubmitModal
           question={question}
           setQuestion={setQuestion}
+          ws={ws}
           state={state}
           tagIndex={generalTagIndex}
           setShowModal={setShowModal}
@@ -387,6 +410,7 @@ const JoinModal = ({ state, showModal, setShowModal }: ModalProps) => {
         <StageTwoFollowUpModal
           question={question}
           setQuestion={setQuestion}
+          ws={ws}
           state={state}
           tagIndex={generalTagIndex}
           setShowModal={setShowModal}

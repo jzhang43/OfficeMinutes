@@ -25,12 +25,6 @@ export const useWs = ({ url }: UseWsProps) => {
 
   const ws = React.useRef<null | ReturnType<typeof connect>>(null);
 
-  // const on = {
-  //   oh: (message, id) => {
-
-  //   }
-  // }
-
   React.useEffect(() => {
     if (session?.user == undefined) {
       return;
@@ -48,39 +42,13 @@ export const useWs = ({ url }: UseWsProps) => {
       setStudent(newStudent);
     }
 
-    // socket.on("connect", () => {
-    //   socket.emit("join", {
-    //     name: newStudent.name,
-    //     id: newStudent.id,
-    //     socket: newStudent.socket,
-    //   });
-    //   // setStudent(newStudent);
-    // });
-
-    // socket.on("close", () => setIsReady(false));
-
     socket.on("update", (state) => {
       console.log("State update", state);
       setState(state);
     });
 
-    // socket.emit("fetch");
-    // socket.onmessage = (event) => setVal(event.data);
-
-    // socket.on("join_queue", ({ socketId, new_question }) => {
-    //   socket.emit("join_queue_req", {socketId, new_question})
-    //   queue.push(new_question);
-
-    //   // console.log("Server Q" + queue);
-    //   console.log("First: ", queue[0]);
-    //   users.forEach(() =>
-    //     io.sockets.to(socketId).emit("join_queue_res", queue)
-    //   );
-    //   // .filter((id) => socketId !== id)
-    //   // .forEach(() => io.sockets.to(socketId).emit("join_queue_res", queue));
-    // });
-    console.log("student in hook", student);
     ws.current = socket;
+
     return () => {
       socket.close();
     };
