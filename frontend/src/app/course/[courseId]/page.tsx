@@ -1,5 +1,7 @@
 import { prisma } from "@/app/server/db";
 import OfficeHour from "@/app/components/OfficeHour";
+import TAOfficeHour from "@/app/components/OfficeHour";
+import OfficeHourTA from "@/app/components/TAOfficeHour";
 
 interface PageProps {
   params: {
@@ -15,7 +17,10 @@ const Page = async ({ params }: PageProps) => {
 
   return (
     <>
-      <OfficeHour backendUrl={process.env.BACKEND_URL ?? ""} course={course} />
+      <OfficeHourTA
+        backendUrl={process.env.BACKEND_URL ?? ""}
+        course={course}
+      />
     </>
   );
 };

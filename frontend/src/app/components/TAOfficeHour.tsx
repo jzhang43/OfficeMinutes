@@ -3,11 +3,10 @@
 import React from "react";
 import { type OfficeHour, Status } from "@/types";
 import Queue from "./Queue";
-import { QuestionPost } from "./QuestionPost";
+import { TAQuestionPost } from "./TAQuestionPost";
 import { Header } from "./Header";
 import JoinModal from "./JoinModal";
 import CurrentGroup from "./CurrentGroup";
-import { useSession } from "next-auth/react";
 
 const STATE: OfficeHour = {
   questions: [
@@ -44,7 +43,7 @@ const STATE: OfficeHour = {
         },
       ],
       description: "I love math",
-      private: false,
+      private: true,
       status: Status.WAITING,
       time: "3:33pm",
     },
@@ -94,12 +93,10 @@ interface OfficeHourProps {
   course: { id: string; title: string; userIds: string[] };
 }
 
-const OfficeHour = (props: OfficeHourProps) => {
+const OfficeHourTA = (props: OfficeHourProps) => {
   const { backendUrl, course } = props;
   const [officeHourState, setOfficeHourState] = React.useState(STATE);
   const [showModal, setShowModal] = React.useState<boolean>(false);
-
-  const { data: session } = useSession();
 
   return (
     <div className="h-full w-full relative">
@@ -107,22 +104,7 @@ const OfficeHour = (props: OfficeHourProps) => {
         headerLeft={
           <div className="text-4xl font-bold">{course.title} Office Hours</div>
         }
-        headerRight={
-          <div
-            className="bg-[#2196F3] px-6 py-4 rounded uppercase text-sm shadow-sm cursor-pointer"
-            onClick={() => setShowModal(true)}
-          >
-            Join Queue
-          </div>
-        }
       />
-      {showModal && (
-        <JoinModal
-          state={STATE}
-          showModal={showModal}
-          setShowModal={setShowModal}
-        />
-      )}
       <div className="h-full w-full grid grid-cols-12 pl-12 pr-4">
         <div className="col-span-9 flex flex-col gap-y-4 py-6 pr-3">
           <div className="w-full border border-[#0288D1] rounded py-1 px-2 flex gap-x-3">
@@ -179,19 +161,18 @@ const OfficeHour = (props: OfficeHourProps) => {
 
           <div className="flex justify-between">
             <div className="font-bold text-3xl text-[#393939]">
-              Group Question Board
+              Queue ({officeHourState.questions.length} People)
             </div>
           </div>
-          <div className="h-full grid grid-cols-2 gap-8">
+          <div className="h-full grid grid-cols-1 gap-8">
             {officeHourState.questions.map((question, idx) => (
-              <div key={idx} className="lg:col-span-1 col-span-2">
-                <QuestionPost key={idx} question={question} />
+              <div key={idx} className="lg:col-span-1 col-span-1">
+                <TAQuestionPost key={idx} question={question} />
               </div>
             ))}
           </div>
         </div>
         <div className="col-span-3 h-full w-full border-l-2 sticky overflow-x-hidden overflow-y-scroll px-6 py-8">
-          <CurrentGroup state={STATE} />
           <Queue state={STATE} />
         </div>
       </div>
@@ -199,4 +180,4 @@ const OfficeHour = (props: OfficeHourProps) => {
   );
 };
 
-export default OfficeHour;
+export default OfficeHourTA;
