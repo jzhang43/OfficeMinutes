@@ -66,6 +66,11 @@ const STATE: OfficeHour = {
           id: "65d178ab07173f4ac5868a46",
           socket: "",
         },
+        {
+          name: "Jack Zhang",
+          id: "65d1790107173f4ac5868a49",
+          socket: "",
+        },
       ],
       description: "I love alcohol",
       private: false,
@@ -140,8 +145,8 @@ const OfficeHour = (props: OfficeHourProps) => {
             <div className="flex flex-col gap-y-2 text-[#014361]">
               <h2 className="font-bold">Announcement</h2>
               <p>
-                Write a good description and not "can you solve this for me" -
-                it helps you more than it help us!
+                Write a good description and not &quot;can you solve this for
+                me&quot; - it helps you more than it help us!
               </p>
             </div>
           </div>
@@ -178,7 +183,6 @@ const OfficeHour = (props: OfficeHourProps) => {
             <div className="font-bold text-3xl text-[#393939]">
               Group Question Board
             </div>
-            <div>HW Help Conceptual Help</div>
           </div>
           <div className="h-full grid grid-cols-2 gap-8">
             {officeHourState.questions.map((question, idx) => (

@@ -7,7 +7,6 @@ interface Props {
 
 export default function Queue({ state }: Props) {
   const now = Date.now();
-  const options = { timeZone: "America/New_York" };
 
   return (
     <div className="flex flex-col gap-3 py-3">
