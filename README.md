@@ -26,14 +26,14 @@ BACKEND_URL=""
 ## Road Map 
 - [x] OAuth
 - [x] Seperation of roles - TA / Student
-- [x] Student Queuing Form (public/private)
+- [x] Student queuing form (public/private)
 - [x] Student join public question
-- [x] TA joins Duty
+- [x] TA joins duty
 - [x] TA mark post as "in progress"
 - [x] TA mark post as "done"
 - [ ] Seperation of Classes
 - [ ] Role validation
-- [ ] TA on duty leave protocol
+- [ ] TA leave duty protocol
 - [ ] Virtual mapping for student locations
 - [ ] Edit queue submission
 - [ ] TA / Student Reflection
