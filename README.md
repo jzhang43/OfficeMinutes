@@ -1,6 +1,16 @@
 # OfficeMinutes
 
-JumboHacks 2024
+Developed in JumboHack 2024. 
+
+A streamlined queuing system for students to queue public/private questions, and groups up students that have similar questions during office hours. Students describe their problems with short titles and weekly-specific tags, giving course staff gain a quick insight to optimize the teaching experience.  
+
+![Joined Group](https://github.com/jzhang43/OfficeMinutes/assets/115383099/ebfe9934-a015-413d-aab9-686f2eed7ded)
+
+
+## Tech Stack
+
+![image](https://github.com/jzhang43/OfficeMinutes/assets/115383099/0ab1c19b-e08a-4bec-9e49-fb0885812cc2)
+
 
 ## Environment Variables
 
@@ -12,3 +22,18 @@ NEXTAUTH_URL=""
 NEXTAUTH_SECRET=""
 BACKEND_URL=""
 ```
+
+## Road Map 
+- [x] OAuth
+- [x] S  eperation of roles - TA / Student
+- [x] Student Queuing Form (public/private)
+- [x] Student join public question
+- [x] TA joins Duty
+- [x] TA mark post as "in progress"
+- [x] TA mark post as "done"
+- [ ] Seperation of Classes
+- [ ] Role validation
+- [ ] TA on duty leave protocol
+- [ ] Virtual mapping for student locations
+- [ ] Edit queue submission
+- [ ] TA / Student Reflection
