@@ -12,16 +12,7 @@ A streamlined queuing system for students to queue public/private questions, and
 ![image](https://github.com/jzhang43/OfficeMinutes/assets/115383099/0ab1c19b-e08a-4bec-9e49-fb0885812cc2)
 
 
-## Environment Variables
 
-```
-DATABASE_URL=""
-GOOGLE_CLIENT_ID=""
-GOOGLE_CLIENT_SECRET=""
-NEXTAUTH_URL=""
-NEXTAUTH_SECRET=""
-BACKEND_URL=""
-```
 
 ## Road Map 
 - [x] OAuth
@@ -37,3 +28,15 @@ BACKEND_URL=""
 - [ ] Virtual mapping for student locations
 - [ ] Edit queue submission
 - [ ] TA / Student Reflection
+
+
+## Environment Variables
+
+```
+DATABASE_URL=""
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+NEXTAUTH_URL=""
+NEXTAUTH_SECRET=""
+BACKEND_URL=""
+```
