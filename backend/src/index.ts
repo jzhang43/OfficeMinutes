@@ -33,6 +33,9 @@ app.get("/api", (req: Request, res: Response) => {
   res.send("Hello, TypeScript Express!");
 });
 
+/* "join"
+  A new socket joins the connection with the server io
+*/
 io.on("connection", (socket) => {
   socket.emit("update", state);
 
@@ -47,10 +50,10 @@ io.on("connection", (socket) => {
     }
   );
 
-  socket.on("fetch", () => {
-    io.emit("update", state);
-  });
-
+  /* "join_queue"
+  User joins the queue with either a private question or public question
+  of their own
+  */
   socket.on("join_queue", (newQuestion: Question) => {
     const index = state.questions.findIndex(
       (question) => newQuestion.question === question.question
@@ -65,9 +68,9 @@ io.on("connection", (socket) => {
     io.emit("update", state);
   });
 
-  /*
-      Leaving a queue from student POV
-      Mark as done removes Question from Questions[]
+  /* "leave_queue"
+  User leaves a question group. 
+  If the group contains 0 students, then delete the question
   */
   socket.on("leave_queue", (student: Student) => {
     state.questions.forEach(
@@ -81,23 +84,12 @@ io.on("connection", (socket) => {
       (question) => question.students.length !== 0
     );
 
-    // if (oldQuestion.students.length === 0) {
-    //   state.questions = state.questions.filter(
-    //     (question) => question.question !== oldQuestion.question
-    //   );
-    // } else {
-    //   const index = state.questions.findIndex(
-    //     (question) => oldQuestion.question === question.question
-    //   );
-    //   state.questions[index] = oldQuestion;
-    //   console.log(state.questions[index].students);
-    // }
     io.emit("update", state);
   });
 
-  /*
-    If newQuestion in list, that means its currently marked as waiting,
-    then just update with newQuestion
+  /* "in_progress"
+    If newQuestion in list, that means its currently marked as waiting.
+    Update question in the server state with "in progress"
   */
   socket.on("in_progress", (newQuestion: Question) => {
     const index = state.questions.findIndex(
@@ -111,6 +103,9 @@ io.on("connection", (socket) => {
     io.emit("update", state);
   });
 
+  /* "done"
+    Marks as question as done, and essentially pops it off from the queue
+  */
   socket.on("done", (question: Question) => {
     const questions = state.questions;
 
@@ -125,6 +120,9 @@ io.on("connection", (socket) => {
     io.emit("update", state);
   });
 
+  /* "add_ta"
+    Adds a ta to the list of ta's of the server state.
+  */
   socket.on("add_ta", (newTA: Student) => {
     const index = state.tas.findIndex((ta) => ta.name === newTA.name);
 
@@ -135,6 +133,9 @@ io.on("connection", (socket) => {
     }
   });
 
+  /* "remove_ta"
+    Removes a ta to the list of ta's of the server state
+  */
   socket.on("remove_ta", (currTa: Student) => {
     state.tas = state.tas.filter((ta) => currTa.id !== ta.id);
 
